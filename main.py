@@ -21,24 +21,53 @@ d.set_window_size(1200, 920)
 #d.maximize_window()
 
 def get_city(city):
+    data = []
     d.get('https://www.etuovi.com/')
 
     time.sleep(3)
+    # Handle popups?
 
     submitbutton = d.find_element_by_xpath("//button[@type='submit']")
     location = d.find_element_by_name("location")
     location.click()
     location.send_keys(city  +"\n")
+    time.sleep(2)
 
-
-    #submitbutton = d.find_element_by_xpath("/div[1]/div/div[2]/div/form/div/div[2]/div[2]/button")
-
-    #submitbutton = d.findElement(By.cssSelector("theme__button__1YqFK.theme__raised__1PjP0.theme__button__1YqFK.theme__squared__17Uvn.theme__solid__1imrK.theme__primary__2-g8T.Button__button__3K-jn.Button__fullWidth__1t757"));
-
-    #// *[ @ id = "frontpage"]
-   # submitbutton = d.find_element_by_class_name("theme__button__1YqFK theme__raised__1PjP0 theme__button__1YqFK theme__squared__17Uvn theme__solid__1imrK theme__primary__2-g8T Button__button__3K-jn Button__fullWidth__1t757")
     submitbutton.click()
 
+    time.sleep(4)
+
+    # Find all property cards
+    cards = d.find_elements_by_class_name("ListPage__cardContainer__39dKQ")
+
+
+    # Cycle through cards and get data
+    for card in cards:
+        card_keytext = card.find_element_by_class_name("styles__cardTitle__14F5m")
+
+        # Apartment description, address
+        upper_row = card_keytext.find_element_by_class_name("flexboxgrid__col-xs-12__1I1LS")
+        upper_row_data = upper_row.text.split("\n")
+        desc = upper_row_data[0]
+        address = upper_row_data[2]
+
+        # Price, size, year
+        lower_row = card_keytext.find_element_by_class_name("styles__itemInfo__oDGHu")
+        lower_row_data = lower_row.text.split("\n")
+        price = lower_row_data[1]
+        size = lower_row_data[3]
+        year = lower_row_data[5]
+
+        row_data = []
+        row_data.append(desc)
+        row_data.append(address)
+        row_data.append(price)
+        row_data.append(size)
+        row_data.append(year)
+
+        data.append(row_data)
+
+    x = 1
 
 
 
